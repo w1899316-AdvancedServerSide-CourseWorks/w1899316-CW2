@@ -21,10 +21,7 @@ db.serialize(() => {
       email       TEXT    UNIQUE NOT NULL,
       password    TEXT    NOT NULL,
       createdAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
-      userCode    TEXT    GENERATED ALWAYS AS (
-                     'User' || printf('%03d', userId)
-                   ) VIRTUAL
+      updatedAt   DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
 

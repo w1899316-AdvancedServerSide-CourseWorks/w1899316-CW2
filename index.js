@@ -8,6 +8,8 @@ const errorHandler = require('./src/middlewares/errorHandler');
 const cors = require('cors');
 const database = require('./src/config/db');
 const router = require('./src/routes/route_default');
+const userRouter = require('./src/routes/user_route');
+const blogRouter = require('./src/routes/blogPost_route');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -30,6 +32,8 @@ app.use(session({
   }
 }));
 app.use('/', router);
+app.use('/travel-tales/api/user', userRouter);
+app.use('//travel-tales/api/post', blogRouter);
 app.use(errorLogger);
 app.use(errorHandler);
 
