@@ -10,6 +10,8 @@ blogRouter.post('/create', blogPostController.createBlogPostApi);
 
 blogRouter.get('/find/blogPostId', blogPostController.getBlogPostByIdApi);
 blogRouter.get('/findall/userId', blogPostController.getBlogPostsByUserIdApi);
+blogRouter.get('/findall/country', blogPostController.getBlogPostsByCountryApi);
+blogRouter.get('/findall/query', blogPostController.searchBlogPostsApi)
 blogRouter.get('/findall', blogPostController.getAllBlogPostsApi);
 
 blogRouter.put('/update', blogPostController.updateBlogPostApi);

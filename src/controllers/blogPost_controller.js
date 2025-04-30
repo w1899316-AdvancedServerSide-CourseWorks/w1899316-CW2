@@ -10,6 +10,8 @@ class BlogPostController {
     this.getAllBlogPostsApi             = this.getAllBlogPostsApi.bind(this);
     this.updateBlogPostApi              = this.updateBlogPostApi.bind(this);
     this.deleteBlogPostApi              = this.deleteBlogPostApi.bind(this);
+    this.getBlogPostsByCountryApi = this.getBlogPostsByCountryApi.bind(this);
+    this.searchBlogPostsApi = this.searchBlogPostsApi.bind(this);
   }
 
   async createBlogPostApi(req, res, next) {
@@ -49,7 +51,24 @@ class BlogPostController {
       next(err);
     }
   }
-
+  async getBlogPostsByCountryApi(req, res, next) {
+    try {
+      const { country } = req.query;
+      const posts = await this.blogPostService.getBlogPostsByCountry_service(country);
+      res.status(200).json(posts);
+    } catch (err) {
+      next(err);
+    }
+  }
+  async searchBlogPostsApi(req, res, next) {
+    try {
+      const { query } = req.query;
+      const posts = await this.blogPostService.searchBlogPosts_service(query);
+      res.status(200).json(posts);
+    } catch (err) {
+      next(err);
+    }
+  }
   async updateBlogPostApi(req, res, next) {
     try {
       const { blogPostId } = req.query;

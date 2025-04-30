@@ -65,6 +65,32 @@ class BlogPostService {
       throw new CustomError(500, "Internal server error");
     }
   }
+  async getBlogPostsByCountry_service(country) {
+    try {
+      return await this.blogPostDao.getBlogPostsByCountry(country);
+    } catch (err) {
+      logger.error({
+        message: "Error in getBlogPostsByCountry_service",
+        errorMessage: err.message,
+        stack: err.stack,
+        country
+      });
+      throw new CustomError(500, "Internal server error");
+    }
+  }
+  async searchBlogPosts_service(query) {
+    try {
+      return await this.blogPostDao.searchBlogPostsByQuery(query);
+    } catch (err) {
+      logger.error({
+        message: "Error in searchBlogPosts_service",
+        errorMessage: err.message,
+        stack: err.stack,
+        query
+      });
+      throw new CustomError(500, "Internal server error");
+    }
+  }
 
   async updateBlogPost_service(post) {
     try {
