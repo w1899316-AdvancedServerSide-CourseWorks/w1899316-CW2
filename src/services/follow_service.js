@@ -5,7 +5,7 @@ const CustomError = require("../utils/errorHandler");
 class FollowService {
 
     constructor() {
-        this.followDao = FollowDao;
+        this.followDao = new FollowDao();
     }
 
     async followUser_service(followerId, followingId) {

@@ -5,7 +5,7 @@ const CustomError = require("../utils/errorHandler");
 
 class BlogPostService {
   constructor() {
-    this.blogPostDao = new BlogPostDao;
+    this.blogPostDao = new BlogPostDao();
   }
 
   async createBlogPost_service(post) {
