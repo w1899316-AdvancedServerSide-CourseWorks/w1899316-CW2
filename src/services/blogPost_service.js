@@ -39,15 +39,17 @@ class BlogPostService {
     }
   }
 
-  async getBlogPostsByUserId_service(userId) {
+  async getBlogPostsByUserId_service(userId, page, size) {
     try {
-      return await this.blogPostDao.getBlogPostsByUserId(userId);
+      return await this.dao.getBlogPostsByUserId(userId, page, size);
     } catch (err) {
       logger.error({
         message: "Error in getBlogPostsByUserId_service",
         errorMessage: err.message,
         stack: err.stack,
-        userId
+        userId,
+        page,
+        size
       });
       throw new CustomError(500, "Internal server error");
     }

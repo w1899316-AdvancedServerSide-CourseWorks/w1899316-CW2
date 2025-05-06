@@ -70,29 +70,60 @@ class BlogPostDao {
     });
   }
 
-  getBlogPostsByUserId(userId) {
+  getBlogPostsByUserId(userId, page = 1, size = 10) {
+    const offset = (page - 1) * size;
     return new Promise((resolve, reject) => {
-      const sql = `
-        SELECT
-          bp.blogPostId,
-          bp.userId,
-          u.firstName || ' ' || u.lastName AS author,
-          bp.title,
-          bp.content,
-          bp.country,
-          bp.dateOfVisit,
-          bp.coverImage,
-          bp.createdAt,
-          bp.updatedAt
-        FROM blogPosts bp
-        JOIN users u ON bp.userId = u.userId
-        WHERE bp.userId = ?
-        ORDER BY bp.createdAt DESC
-      `;
-      db.all(sql, [userId], (err, rows) => err ? reject(err) : resolve(rows));
+      db.get(
+        `SELECT COUNT(*) AS cnt
+         FROM blogPosts
+         WHERE userId = ?`,
+        [userId],
+        (err, { cnt }) => {
+          if (err) return reject(err);
+          const totalPages = Math.max(Math.ceil(cnt / size), 1);
+
+          db.all(
+            `SELECT
+               bp.blogPostId,
+               bp.userId,
+               u.firstName || ' ' || u.lastName AS author,
+               bp.title,
+               bp.content,
+               bp.country,
+               bp.dateOfVisit,
+               bp.coverImage,
+               bp.createdAt,
+               bp.updatedAt,
+
+               -- inline counts
+               (SELECT COUNT(*) FROM reactions r
+                WHERE r.postId = bp.blogPostId AND r.type = 'like'
+               )   AS likes,
+
+               (SELECT COUNT(*) FROM reactions r
+                WHERE r.postId = bp.blogPostId AND r.type = 'dislike'
+               )   AS dislikes
+
+             FROM blogPosts bp
+             JOIN users u ON bp.userId = u.userId
+             WHERE bp.userId = ?
+             ORDER BY bp.createdAt DESC
+             LIMIT ? OFFSET ?`,
+            [userId, size, offset],
+            (err2, rows) => {
+              if (err2) return reject(err2);
+              resolve({
+                posts: rows,
+                page,
+                size,
+                totalPages
+              });
+            }
+          );
+        }
+      );
     });
   }
-
   getAllBlogPosts() {
     return new Promise((resolve, reject) => {
       const sql = `
@@ -127,12 +158,27 @@ class BlogPostDao {
           bp.dateOfVisit,
           bp.coverImage,
           bp.createdAt,
-          bp.updatedAt
+          bp.updatedAt,
+
+          (SELECT COUNT(*) 
+           FROM reactions r 
+           WHERE r.postId = bp.blogPostId 
+             AND r.type = 'like'
+          ) AS likes,
+
+          (SELECT COUNT(*) 
+           FROM reactions r 
+           WHERE r.postId = bp.blogPostId 
+             AND r.type = 'dislike'
+          ) AS dislikes
+
         FROM blogPosts bp
-        JOIN users u ON bp.userId = u.userId
+        JOIN users u 
+          ON bp.userId = u.userId
         ORDER BY bp.createdAt DESC
         LIMIT ? OFFSET ?
       `;
+
       db.all(sql, [limit, offset], (err, rows) => {
         if (err) return reject(err);
         resolve(rows);
