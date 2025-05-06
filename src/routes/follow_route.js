@@ -7,7 +7,7 @@ followRouter.get('/',(req, res) => {
 });
 
 followRouter.post("/create", follow_controller.followUserApi)
-followRouter.post("/unfollow/user", follow_controller.unfollowUserApi)
+followRouter.delete("/unfollow/user", follow_controller.unfollowUserApi)
 
 followRouter.get("/find/followers", follow_controller.getFollowersApi)
 followRouter.get("/find/following", follow_controller.getFollowingApi)

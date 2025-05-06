@@ -16,13 +16,22 @@ class BlogPostController {
 
   async createBlogPostApi(req, res, next) {
     try {
-      const post = await this.blogPostService.createBlogPost_service(req.body);
+      let coverUrl = null;
+      if (req.file) {
+        coverUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      }
+
+      const dto = {
+        ...req.body,
+        coverImage: coverUrl
+      };
+
+      const post = await this.blogPostService.createBlogPost_service(dto);
       res.status(201).json(post);
     } catch (err) {
       next(err);
     }
   }
-
   async getBlogPostByIdApi(req, res, next) {
     try {
       const { blogPostId } = req.query;
@@ -45,8 +54,9 @@ class BlogPostController {
 
   async getAllBlogPostsApi(req, res, next) {
     try {
-      const posts = await this.blogPostService.getAllBlogPosts_service();
-      res.status(200).json(posts);
+      const { page = 1, size = 10 } = req.query;
+      const data = await this.blogPostService.getAllBlogPosts_service(page, size);
+      res.status(200).json(data);
     } catch (err) {
       next(err);
     }
@@ -72,8 +82,21 @@ class BlogPostController {
   async updateBlogPostApi(req, res, next) {
     try {
       const { blogPostId } = req.query;
-      const post = { blogPostId, ...req.body };
-      const updated = await this.blogPostService.updateBlogPost_service(post);
+      const { title, content, country, dateOfVisit } = req.body;
+  
+      const dto = {
+        blogPostId,
+        title,
+        content,
+        country,
+        dateOfVisit
+      };
+  
+      if (req.file) {
+        dto.coverImage = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      }
+  
+      const updated = await this.blogPostService.updateBlogPost_service(dto);
       res.status(200).json(updated);
     } catch (err) {
       next(err);

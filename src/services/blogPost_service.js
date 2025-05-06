@@ -65,6 +65,32 @@ class BlogPostService {
       throw new CustomError(500, "Internal server error");
     }
   }
+  async getAllBlogPosts_service(page = 1, size = 10) {
+    const limit = parseInt(size, 10);
+    const offset = (parseInt(page, 10) - 1) * limit;
+    try {
+      const [rows, total] = await Promise.all([
+        this.blogPostDao.getAllBlogPostsPaginated(limit, offset),
+        this.blogPostDao.countAllBlogPosts()
+      ]);
+      return {
+        page: parseInt(page, 10),
+        size: limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        posts: rows
+      };
+    } catch (err) {
+      logger.error({
+        message: 'Error in getAllBlogPosts_service',
+        errorMessage: err.message,
+        stack: err.stack,
+        page,
+        size
+      });
+      throw new CustomError(500, 'Internal server error');
+    }
+  }
   async getBlogPostsByCountry_service(country) {
     try {
       return await this.blogPostDao.getBlogPostsByCountry(country);
