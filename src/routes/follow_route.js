@@ -1,12 +1,13 @@
 const express = require('express');
 const follow_controller = require('../controllers/follow_controller');
+const { authenticateTokenCookie } = require('../middlewares/authMiddleware');
 const followRouter = express.Router();
 
 followRouter.get('/',(req, res) => {
     return res.status(200).json({"message": "follow service"});
 });
 
-followRouter.post("/create", follow_controller.followUserApi)
+followRouter.post("/create",authenticateTokenCookie, follow_controller.followUserApi)
 followRouter.delete("/unfollow/user", follow_controller.unfollowUserApi)
 
 followRouter.get("/find/followers", follow_controller.getFollowersApi)

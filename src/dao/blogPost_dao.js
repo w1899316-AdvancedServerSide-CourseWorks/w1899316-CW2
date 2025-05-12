@@ -241,6 +241,98 @@ class BlogPostDao {
       db.all(sql, [like, like], (err, rows) => err ? reject(err) : resolve(rows));
     });
   }
+  searchBlogPostsByCountryPaginated(countryQuery, page = 1, size = 10) {
+    const offset = (page - 1) * size;
+    const like = `%${countryQuery}%`;
+    return new Promise((resolve, reject) => {
+      db.get(
+        `SELECT COUNT(*) AS cnt
+         FROM blogPosts
+         WHERE country LIKE ?`,
+        [like],
+        (err, { cnt } = {}) => {
+          if (err) return reject(err);
+          const totalPages = Math.max(Math.ceil(cnt / size), 1);
+          db.all(
+            `SELECT
+               bp.blogPostId,
+               bp.userId,
+               u.firstName || ' ' || u.lastName AS author,
+               bp.title,
+               bp.content,
+               bp.country,
+               bp.dateOfVisit,
+               bp.coverImage,
+               bp.createdAt,
+               bp.updatedAt,
+               (SELECT COUNT(*) FROM reactions r
+                  WHERE r.postId = bp.blogPostId AND r.type = 'like'
+               ) AS likes,
+               (SELECT COUNT(*) FROM reactions r
+                  WHERE r.postId = bp.blogPostId AND r.type = 'dislike'
+               ) AS dislikes
+             FROM blogPosts bp
+             JOIN users u ON bp.userId = u.userId
+             WHERE bp.country LIKE ?
+             ORDER BY bp.createdAt DESC
+             LIMIT ? OFFSET ?`,
+            [like, size, offset],
+            (err2, rows) => {
+              if (err2) return reject(err2);
+              resolve({ posts: rows, page, size, totalPages });
+            }
+          );
+        }
+      );
+    });
+  }
+searchBlogPostsByAuthorPaginated(authorQuery, page = 1, size = 10) {
+    const offset = (page - 1) * size;
+    const like = `%${authorQuery}%`;
+    return new Promise((resolve, reject) => {
+      db.get(
+        `SELECT COUNT(*) AS cnt
+         FROM blogPosts bp
+         JOIN users u ON bp.userId = u.userId
+         WHERE (u.firstName || ' ' || u.lastName) LIKE ?`,
+        [like],
+        (err, { cnt } = {}) => {
+          if (err) return reject(err);
+          const totalPages = Math.max(Math.ceil(cnt / size), 1);
+          db.all(
+            `SELECT
+               bp.blogPostId,
+               bp.userId,
+               u.firstName || ' ' || u.lastName AS author,
+               bp.title,
+               bp.content,
+               bp.country,
+               bp.dateOfVisit,
+               bp.coverImage,
+               bp.createdAt,
+               bp.updatedAt,
+               (SELECT COUNT(*) FROM reactions r
+                  WHERE r.postId = bp.blogPostId AND r.type = 'like'
+               ) AS likes,
+               (SELECT COUNT(*) FROM reactions r
+                  WHERE r.postId = bp.blogPostId AND r.type = 'dislike'
+               ) AS dislikes
+             FROM blogPosts bp
+             JOIN users u ON bp.userId = u.userId
+             WHERE (u.firstName || ' ' || u.lastName) LIKE ?
+             ORDER BY bp.createdAt DESC
+             LIMIT ? OFFSET ?`,
+            [like, size, offset],
+            (err2, rows) => {
+              if (err2) return reject(err2);
+              resolve({ posts: rows, page, size, totalPages });
+            }
+          );
+        }
+      );
+    });
+  }
+
 
   updateBlogPost(post) {
     const { blogPostId, title, content, country, dateOfVisit, coverImage = null } = post;

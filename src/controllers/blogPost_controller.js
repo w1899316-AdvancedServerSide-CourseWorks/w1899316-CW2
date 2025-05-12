@@ -3,15 +3,17 @@ const BlogPostService = require("../services/blogPost_service");
 
 class BlogPostController {
   constructor() {
-    this.blogPostService                = new BlogPostService();
-    this.createBlogPostApi              = this.createBlogPostApi.bind(this);
-    this.getBlogPostByIdApi             = this.getBlogPostByIdApi.bind(this);
-    this.getBlogPostsByUserIdApi        = this.getBlogPostsByUserIdApi.bind(this);
-    this.getAllBlogPostsApi             = this.getAllBlogPostsApi.bind(this);
-    this.updateBlogPostApi              = this.updateBlogPostApi.bind(this);
-    this.deleteBlogPostApi              = this.deleteBlogPostApi.bind(this);
+    this.blogPostService = new BlogPostService();
+    this.createBlogPostApi = this.createBlogPostApi.bind(this);
+    this.getBlogPostByIdApi = this.getBlogPostByIdApi.bind(this);
+    this.getBlogPostsByUserIdApi = this.getBlogPostsByUserIdApi.bind(this);
+    this.getAllBlogPostsApi = this.getAllBlogPostsApi.bind(this);
+    this.updateBlogPostApi = this.updateBlogPostApi.bind(this);
+    this.deleteBlogPostApi  = this.deleteBlogPostApi.bind(this);
     this.getBlogPostsByCountryApi = this.getBlogPostsByCountryApi.bind(this);
     this.searchBlogPostsApi = this.searchBlogPostsApi.bind(this);
+    this.searchByCountryApi = this.searchByCountryApi.bind(this);
+    this.searchByAuthorApi = this.searchByCountryApi.bind(this);
   }
 
   async createBlogPostApi(req, res, next) {
@@ -77,6 +79,25 @@ class BlogPostController {
       const { query } = req.query;
       const posts = await this.blogPostService.searchBlogPosts_service(query);
       res.status(200).json(posts);
+    } catch (err) {
+      next(err);
+    }
+  }
+  async searchByCountryApi(req, res, next) {
+    try {
+      const { query, page, size } = req.query;
+      const result = await this.blogPostService.searchByCountry_service(query, page, size);
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+async searchByAuthorApi(req, res, next) {
+    try {
+      const { query, page, size } = req.query;
+      const result = await this.blogPostService.searchByAuthor_service(query, page, size);
+      res.json(result);
     } catch (err) {
       next(err);
     }
