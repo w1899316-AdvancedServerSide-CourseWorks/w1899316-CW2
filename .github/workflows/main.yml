@@ -3,7 +3,7 @@ name: w1899316-CW1-UI
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
