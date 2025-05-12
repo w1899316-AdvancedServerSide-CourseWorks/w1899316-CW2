@@ -13,6 +13,8 @@ const blogRouter = require('./src/routes/blogPost_route');
 const followRouter = require('./src/routes/follow_route');
 const reactionRouter = require('./src/routes/reaction_route');
 const path    = require('path');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./src/config/swagger.json');
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -44,7 +46,8 @@ app.use('/', router);
 app.use('/travel-tales/api/user', userRouter);
 app.use('/travel-tales/api/post', blogRouter);
 app.use('/travel-tales/api/follow', followRouter);
-app.use('/travel-tales/api/reaction', reactionRouter)
+app.use('/travel-tales/api/reaction', reactionRouter);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use(errorLogger);
 app.use(errorHandler);
 
