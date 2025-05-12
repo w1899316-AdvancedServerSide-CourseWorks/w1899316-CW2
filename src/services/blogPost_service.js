@@ -41,7 +41,7 @@ class BlogPostService {
 
   async getBlogPostsByUserId_service(userId, page, size) {
     try {
-      return await this.dao.getBlogPostsByUserId(userId, page, size);
+      return await this.blogPostDao.getBlogPostsByUserId(userId, page, size);
     } catch (err) {
       logger.error({
         message: "Error in getBlogPostsByUserId_service",

@@ -10,7 +10,6 @@ class BlogPostController {
     this.getAllBlogPostsApi = this.getAllBlogPostsApi.bind(this);
     this.updateBlogPostApi = this.updateBlogPostApi.bind(this);
     this.deleteBlogPostApi = this.deleteBlogPostApi.bind(this);
-    this.getBlogPostsByCountryApi = this.getBlogPostsByCountryApi.bind(this);
     this.searchBlogPostsApi = this.searchBlogPostsApi.bind(this);
     this.searchByCountryApi = this.searchByCountryApi.bind(this);
     this.searchByAuthorApi = this.searchByAuthorApi.bind(this);
