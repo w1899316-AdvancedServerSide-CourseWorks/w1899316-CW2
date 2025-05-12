@@ -14,7 +14,7 @@ const followRouter = require('./src/routes/follow_route');
 const reactionRouter = require('./src/routes/reaction_route');
 const path    = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
