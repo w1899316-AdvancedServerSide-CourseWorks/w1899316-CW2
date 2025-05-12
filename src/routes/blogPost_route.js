@@ -22,12 +22,13 @@ blogRouter.get('/', (req, res) => {
 });
 
 blogRouter.post('/create', upload.single('coverImage'), authenticateTokenCookie, blogPostController.createBlogPostApi);
-blogRouter.get('/find/blogPostId',    blogPostController.getBlogPostByIdApi);
-blogRouter.get('/findall/userId',     blogPostController.getBlogPostsByUserIdApi);
-blogRouter.get('/findall/country',    blogPostController.getBlogPostsByCountryApi);
-blogRouter.get('/findall/query',      blogPostController.searchBlogPostsApi);
-blogRouter.get('/findall',            blogPostController.getAllBlogPostsApi);
+blogRouter.get('/find/blogPostId', blogPostController.getBlogPostByIdApi);
+blogRouter.get('/findall/userId', blogPostController.getBlogPostsByUserIdApi);
+blogRouter.get('/findall/country', blogPostController.searchByCountryApi);
+blogRouter.get('/findall/author', blogPostController.searchByAuthorApi);
+blogRouter.get('/findall/query', blogPostController.searchBlogPostsApi);
+blogRouter.get('/findall', blogPostController.getAllBlogPostsApi);
 blogRouter.put('/update', upload.single('coverImage'), authenticateTokenCookie,blogPostController.updateBlogPostApi);
-blogRouter.delete('/delete',          blogPostController.deleteBlogPostApi);
+blogRouter.delete('/delete', blogPostController.deleteBlogPostApi);
 
 module.exports = blogRouter;
