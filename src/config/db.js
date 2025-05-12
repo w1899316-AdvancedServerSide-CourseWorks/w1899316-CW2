@@ -21,14 +21,10 @@ db.serialize(() => {
       email       TEXT    UNIQUE NOT NULL,
       password    TEXT    NOT NULL,
       createdAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
-      userCode    TEXT    GENERATED ALWAYS AS (
-                     'User' || printf('%03d', userId)
-                   ) VIRTUAL
+      updatedAt   DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
-  // BLOG POSTS
   db.run(`
     CREATE TABLE IF NOT EXISTS blogPosts (
       blogPostId  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,13 +33,13 @@ db.serialize(() => {
       content     TEXT    NOT NULL,
       country     TEXT    NOT NULL,
       dateOfVisit TEXT    NOT NULL,
+      coverImage TEXT,
       createdAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (userId) REFERENCES users(userId)
     )
   `);
 
-  // FOLLOWS
   db.run(`
     CREATE TABLE IF NOT EXISTS follows (
       followId     INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,7 +51,6 @@ db.serialize(() => {
     )
   `);
 
-  // REACTIONS
   db.run(`
     CREATE TABLE IF NOT EXISTS reactions (
       reactionId  INTEGER PRIMARY KEY AUTOINCREMENT,
