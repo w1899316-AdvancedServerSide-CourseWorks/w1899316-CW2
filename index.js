@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(requestLogger);
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:3003'],
   credentials: true
 }));
 app.use(express.json({ limit: '100mb' }));
